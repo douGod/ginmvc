@@ -11,12 +11,12 @@ var myDb *gorm.DB
 func init(){
 	connectDb()
 }
-func connectDb() bool{
+func connectDb(){
 	var err error
 	var Dsn = config.C("DB_USER")+":"+ config.C("DB_PWD")+"@("+config.C("DB_HOST")+")/"+config.C("DB_NAME")+"?charset=utf8&parseTime=true"
 	if myDb,err = gorm.Open(config.C("DB_DRIVER"),Dsn);err != nil{
 		fmt.Println(err)
-		return false
+		return
 	}
 	//myDb.LogMode(true)//logdebug打印sql
 	fmt.Println("success to connect db")
@@ -26,7 +26,6 @@ func connectDb() bool{
 	myDb.DB().SetMaxIdleConns(10)
 	//最大连接数
 	myDb.DB().SetMaxOpenConns(100)
-	return true
 }
 func GetDb()*gorm.DB{
 	return myDb
