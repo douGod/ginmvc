@@ -131,7 +131,6 @@ func WeChat(c *gin.Context){
 	//存储链接
 	mapConnect[ConnectIndex] = Conn
 	ConnectIndex++
-	fmt.Println(ConnectIndex)
 	GlobalMutex.Unlock()
 	//挂起循环读协程
 	go Conn.ReadLoop()

@@ -5,8 +5,8 @@ import (
 	"LaodamingMVC/network"
 	"github.com/gin-gonic/gin"
 )
-func NoRouter(c *gin.Context){
-	c.String(404,"亚视拉尼")
+func noRouter(c *gin.Context){
+	c.String(404,"无效的访问路由")
 }
 func SetupRouter() *gin.Engine{
 	r := gin.Default()
@@ -19,6 +19,6 @@ func SetupRouter() *gin.Engine{
 	r.GET("/",control.ShowWeChat)
 	//websocket连接升级请求
 	r.GET("/ws",network.WeChat)
-	r.NoRoute(NoRouter)
+	r.NoRoute(noRouter)
 	return r
 }
