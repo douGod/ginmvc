@@ -5,11 +5,15 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"sync"
 )
 //操作数据库指针
 var myDb *gorm.DB
+var once sync.Once
 func init(){
-	connectDb()
+	once.Do(func(){
+		connectDb()
+	})
 }
 func connectDb(){
 	var err error

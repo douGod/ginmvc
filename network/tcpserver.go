@@ -4,23 +4,27 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 )
 var mapTcpConn map[string] net.Conn
+var tcpservonce sync.Once
 func SetUpTcpServer(){
-	mapTcpConn = make(map[string] net.Conn)
-	list,err := net.Listen("tcp","0.0.0.0:9502")
-	fmt.Println("success to setup tcp serv")
-	defer list.Close()
-	if err != nil{
-		log.Fatal(err)
-	}
-	for {
-		conn,err := list.Accept()
+	tcpservonce.Do(func(){
+		mapTcpConn = make(map[string] net.Conn)
+		list,err := net.Listen("tcp","0.0.0.0:9502")
+		fmt.Println("success to setup tcp serv")
+		defer list.Close()
 		if err != nil{
-			continue
+			log.Fatal(err)
 		}
-		go delWithConn(conn)
-	}
+		for {
+			conn,err := list.Accept()
+			if err != nil{
+				continue
+			}
+			go delWithConn(conn)
+		}
+	})
 }
 
 func delWithConn(conn net.Conn){
