@@ -73,7 +73,7 @@ func (con *conn)ReadMessage()(data []byte,err error ){
 func (con *conn)WriteLoop(){
 	//select多路IO复用
 	var data []byte
-	//var err error
+	var err error
 	for{
 		select{
 			case data = <- con.OutChannel:

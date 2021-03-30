@@ -20,7 +20,7 @@ func SetUpTcpClient(){
 		if err != nil{
 			log.Fatal(err)
 		}
-		//模拟一直向服务端发送消息
+		//一直向服务端发送消息
 		var data []byte
 		for {
 			select{
