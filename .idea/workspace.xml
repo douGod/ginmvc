@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c09ff5c8-15e5-43cc-aca1-da90671a261f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/control/user_control.go" beforeDir="false" afterPath="$PROJECT_DIR$/control/user_control.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/tcpserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/network/tcpserver.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,11 +24,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/network/tcpserver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+            <state relative-caret-position="304">
+              <caret line="40" column="27" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
               <folding>
                 <element signature="e#17#56#0" expanded="true" />
               </folding>
@@ -37,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/control/user_control.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="20" column="1" lean-forward="true" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
+            <state relative-caret-position="133">
+              <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -90,13 +89,13 @@
         <option value="$PROJECT_DIR$/config/config.go" />
         <option value="$PROJECT_DIR$/view/ws.html" />
         <option value="$PROJECT_DIR$/network/tcpserv.go" />
-        <option value="$PROJECT_DIR$/network/tcpserver.go" />
         <option value="$PROJECT_DIR$/network/websocket.go" />
         <option value="$PROJECT_DIR$/database/mysqldb.go" />
         <option value="$PROJECT_DIR$/network/tcpclient.go" />
         <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/router/router.go" />
         <option value="$PROJECT_DIR$/control/user_control.go" />
+        <option value="$PROJECT_DIR$/network/tcpserver.go" />
       </list>
     </option>
   </component>
@@ -358,16 +357,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/network/tcpserver.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
-          <folding>
-            <element signature="e#17#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -400,8 +389,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/control/user_control.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="20" column="1" lean-forward="true" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
+        <state relative-caret-position="133">
+          <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network/tcpserver.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="40" column="27" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
+          <folding>
+            <element signature="e#17#56#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

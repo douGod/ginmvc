@@ -38,7 +38,7 @@ func delWithConn(conn net.Conn){
 			fmt.Println("failed to read from client")
 			return
 		}
-		fmt.Printf("recive message:%s \r\n",string(data[:n]))
+		fmt.Printf("recieve message:%s \r\n",string(data[:n]))
 		_,err = conn.Write(data[:n])
 		if err != nil{
 			fmt.Println("failed to respond to  client")
