@@ -15,7 +15,7 @@ func SetupRouter() *gin.Engine{
 	//设置访问路由
 	r.GET("/GetUser/:ID",control.GetUser)
 	r.GET("/AddUser",control.AddUser)
-	r.GET("/Test",control.Test)
+	r.GET("/Test/:Message",control.Test)
 	//聊天页面路由
 	r.GET("/",control.ShowWeChat)
 	//websocket连接升级请求

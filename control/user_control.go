@@ -2,6 +2,7 @@ package control
 
 import (
 	"LaodamingMVC/model"
+	"LaodamingMVC/network"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -16,7 +17,7 @@ func AddUser(c *gin.Context){
 	model.AddUserInfo()
 }
 func Test(c *gin.Context){
-
+	go network.SendMessage([]byte(c.Param("Message")))
 }
 
 func ShowWeChat(c *gin.Context){
