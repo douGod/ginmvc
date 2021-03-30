@@ -19,26 +19,24 @@ var(
 		},
 	}
 )
-var ConnectIndex int64
-var GlobalMutex sync.Mutex
+
 //连接信息结构体
 type conn struct {
 	Connection *websocket.Conn
-	BindID int64
+	BindID string
 	IsClose bool
 	Muetex sync.Mutex
 	InChannel chan []byte
 	OutChannel chan []byte
 	CloseChan chan []byte
 }
-var mapConnect map[int64] *conn
+var mapConnect sync.Map
 func init(){
-	ConnectIndex = 0
-	mapConnect = make(map[int64] *conn)
+
 }
 //关闭连接
 func (con *conn)CloseWs(){
-	delete(mapConnect,con.BindID)
+	mapConnect.Delete(con.BindID)
 	con.Connection.Close()
 	con.Muetex.Lock()
 	if !con.IsClose{
@@ -75,30 +73,34 @@ func (con *conn)ReadMessage()(data []byte,err error ){
 func (con *conn)WriteLoop(){
 	//select多路IO复用
 	var data []byte
-	var err error
+	//var err error
 	for{
 		select{
-		case data = <- con.OutChannel:
-			for _,v := range mapConnect{
-				//自己的消息除了心跳发送给自己其他不发送
-				if v.BindID == con.BindID{
-					if strings.Compare(string(data),"heartbeat") == 0{
-						if err = v.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
-							fmt.Println(err)
-							goto ERR
+			case data = <- con.OutChannel:
+				mapConnect.Range(func(k interface{},v interface{})bool{
+					v1 := v.(*conn)
+					if v1.BindID == con.BindID{
+						if strings.Compare(string(data),"heartbeat") == 0{
+							if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
+								fmt.Println(err)
+								con.CloseWs()
+								return false
+							}
+						}
+					}else{//别人发送的消息除了心跳都发送
+						if strings.Compare(string(data),"heartbeat") != 0{
+							if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
+								fmt.Println(err)
+								con.CloseWs()
+								return false
+							}
 						}
 					}
-				}else{//别人发送的消息除了心跳都发送
-					if strings.Compare(string(data),"heartbeat") != 0{
-						if err = v.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
-							fmt.Println(err)
-							goto ERR
-						}
-					}
-				}
-			}
-		case <- con.CloseChan:
-			goto ERR
+					return true
+				})
+
+			case <- con.CloseChan:
+				goto ERR
 		}
 	}
 ERR:
@@ -121,17 +123,14 @@ func WeChat(c *gin.Context){
 	Conn.InChannel = make(chan []byte,1000)//缓冲区1000个字节
 	Conn.OutChannel = make(chan []byte,1000)//缓冲区1000个字节
 	Conn.IsClose = false
-	Conn.BindID = ConnectIndex
+	Conn.BindID = c.Request.RemoteAddr
 	if Conn.Connection,err = Upgrade.Upgrade(c.Writer,c.Request,nil);err != nil{
 		Conn.CloseWs()
 		log.Fatal(err)
 		return
 	}
-	GlobalMutex.Lock()
 	//存储链接
-	mapConnect[ConnectIndex] = Conn
-	ConnectIndex++
-	GlobalMutex.Unlock()
+	mapConnect.Store(c.Request.RemoteAddr,Conn)
 	//挂起循环读协程
 	go Conn.ReadLoop()
 	//挂起循环写协程
