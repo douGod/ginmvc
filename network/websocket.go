@@ -31,9 +31,6 @@ type conn struct {
 	CloseChan chan []byte
 }
 var mapConnect sync.Map
-func init(){
-
-}
 //关闭连接
 func (con *conn)CloseWs(){
 	mapConnect.Delete(con.BindID)
