@@ -28,7 +28,7 @@ func SetUpTcpClient(){
 			select{
 				case data = <- msgChannel:
 					if _,err = tcpconn.Write(data);err != nil{
-						continue
+						goto ERR
 					}
 				case <-closeChannel:
 					goto ERR
