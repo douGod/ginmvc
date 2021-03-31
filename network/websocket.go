@@ -73,38 +73,40 @@ func (con *conn)ReadMessage()(data []byte,err error ){
 func (con *conn)WriteLoop(){
 	//select多路IO复用
 	var data []byte
-	var err error
 	for{
 		select{
 			case data = <- con.OutChannel:
-				mapConnect.Range(func(k interface{},v interface{})bool{
-					v1 := v.(*conn)
-					if v1.BindID == con.BindID{
-						if strings.Compare(string(data),"heartbeat") == 0{
-							if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
-								fmt.Println(err)
-								con.CloseWs()
-								return false
-							}
-						}
-					}else{//别人发送的消息除了心跳都发送
-						if strings.Compare(string(data),"heartbeat") != 0{
-							if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
-								fmt.Println(err)
-								con.CloseWs()
-								return false
-							}
-						}
-					}
-					return true
-				})
-
+				con.SendMsgToClient(data)
 			case <- con.CloseChan:
 				goto ERR
 		}
 	}
 ERR:
 	con.CloseWs()
+}
+func(con *conn)SendMsgToClient(data []byte){
+	var err error
+	mapConnect.Range(func(k interface{},v interface{})bool{
+		v1 := v.(*conn)
+		if v1.BindID == con.BindID{
+			if strings.Compare(string(data),"heartbeat") == 0{
+				if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
+					fmt.Println(err)
+					con.CloseWs()
+					return false
+				}
+			}
+		}else{//别人发送的消息除了心跳都发送
+			if strings.Compare(string(data),"heartbeat") != 0{
+				if err = v1.Connection.WriteMessage(websocket.TextMessage,data);err != nil{
+					fmt.Println(err)
+					con.CloseWs()
+					return false
+				}
+			}
+		}
+		return true
+	})
 }
 //发送信息
 func (con *conn)WriteMessage(data []byte)(err error){
