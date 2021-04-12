@@ -148,10 +148,12 @@ func WeChat(c *gin.Context){
 			select{
 				case <-Conn.CloseChan:
 					goto ERR
+				default:
+					if err = Conn.WriteMessage([]byte("heartbeat"));err != nil{
+						goto ERR
+					}
 			}
-			if err = Conn.WriteMessage([]byte("heartbeat"));err != nil{
-				goto ERR
-			}
+
 		}
 		ERR:
 			wait.Done()
