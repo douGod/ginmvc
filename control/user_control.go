@@ -2,6 +2,7 @@ package control
 
 import (
 	"LaodamingMVC/model"
+	"LaodamingMVC/network"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -28,6 +29,9 @@ func Test(c *gin.Context){
 		}
 	}
 	fmt.Println(arr)
+}
+func SendMsg(c *gin.Context){
+	network.SendMessage([]byte("hellow world!!"))
 }
 
 func ShowWeChat(c *gin.Context){

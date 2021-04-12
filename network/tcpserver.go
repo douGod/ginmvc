@@ -6,11 +6,9 @@ import (
 	"net"
 	"sync"
 )
-var mapTcpConn map[string] net.Conn
 var tcpservonce sync.Once
 func SetUpTcpServer(){
 	tcpservonce.Do(func(){
-		mapTcpConn = make(map[string] net.Conn)
 		list,err := net.Listen("tcp","0.0.0.0:9502")
 		fmt.Println("success to setup tcp serv")
 		defer list.Close()
@@ -28,7 +26,6 @@ func SetUpTcpServer(){
 }
 
 func delWithConn(conn net.Conn){
-	mapTcpConn[conn.RemoteAddr().String()] = conn
 	data := make([]byte,2048)
 	var err error
 	var n int
