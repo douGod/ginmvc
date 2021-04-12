@@ -39,11 +39,13 @@ func (con *conn)CloseWs(){
 	if !con.IsClose{
 		con.IsClose = true
 		close(con.CloseChan)
+		close(con.InChannel)
+		close(con.OutChannel)
 	}
 	con.Muetex.Unlock()
 }
 //循环读取接收到的信息
-func (con *conn)ReadLoop(){
+func (con *conn)ReadLoop(wait *sync.WaitGroup){
 	var data []byte
 	var err error
 	for{
@@ -55,6 +57,7 @@ func (con *conn)ReadLoop(){
 	}
 	ERR:
 		con.CloseWs()
+		wait.Done()
 }
 //读取信息
 func (con *conn)ReadMessage()(data []byte,err error ){
@@ -67,7 +70,7 @@ func (con *conn)ReadMessage()(data []byte,err error ){
 	return
 }
 //循环写入信息
-func (con *conn)WriteLoop(){
+func (con *conn)WriteLoop(wait *sync.WaitGroup){
 	//select多路IO复用
 	var data []byte
 	for{
@@ -80,6 +83,7 @@ func (con *conn)WriteLoop(){
 	}
 ERR:
 	con.CloseWs()
+	wait.Done()
 }
 func(con *conn)SendMsgToClient(data []byte){
 	var err error
@@ -130,20 +134,28 @@ func WeChat(c *gin.Context){
 	}
 	//存储链接
 	mapConnect.Store(c.Request.RemoteAddr,Conn)
+	wait := new(sync.WaitGroup)
+	wait.Add(3)
 	//挂起循环读协程
-	go Conn.ReadLoop()
+	go Conn.ReadLoop(wait)
 	//挂起循环写协程
-	go Conn.WriteLoop()
+	go Conn.WriteLoop(wait)
 
 	//心跳检测
-	go func(){
+	go func(wait *sync.WaitGroup){
 		for{
 			time.Sleep(time.Second * 5)
+			select{
+				case <-Conn.CloseChan:
+					goto ERR
+			}
 			if err = Conn.WriteMessage([]byte("heartbeat"));err != nil{
-				return
+				goto ERR
 			}
 		}
-	}()
+		ERR:
+			wait.Done()
+	}(wait)
 	for{
 		//读数据
 		if data,err = Conn.ReadMessage();err != nil{
@@ -156,6 +168,7 @@ func WeChat(c *gin.Context){
 			return
 		}
 	}
+	wait.Wait()
 }
 
 
