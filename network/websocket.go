@@ -46,6 +46,7 @@ func (con *conn)CloseWs(){
 }
 //循环读取接收到的信息
 func (con *conn)ReadLoop(wait *sync.WaitGroup){
+	defer wait.Done()
 	var data []byte
 	var err error
 	for{
@@ -57,7 +58,6 @@ func (con *conn)ReadLoop(wait *sync.WaitGroup){
 	}
 	ERR:
 		con.CloseWs()
-		wait.Done()
 }
 //读取信息
 func (con *conn)ReadMessage()(data []byte,err error ){
@@ -71,6 +71,7 @@ func (con *conn)ReadMessage()(data []byte,err error ){
 }
 //循环写入信息
 func (con *conn)WriteLoop(wait *sync.WaitGroup){
+	defer wait.Done()
 	//select多路IO复用
 	var data []byte
 	for{
@@ -83,7 +84,6 @@ func (con *conn)WriteLoop(wait *sync.WaitGroup){
 	}
 ERR:
 	con.CloseWs()
-	wait.Done()
 }
 func(con *conn)SendMsgToClient(data []byte){
 	var err error
@@ -146,7 +146,7 @@ func WeChat(c *gin.Context){
 		for{
 			time.Sleep(time.Second * 5)
 			select{
-				case <-Conn.CloseChan:
+				case <- Conn.CloseChan:
 					goto ERR
 				default:
 					if err = Conn.WriteMessage([]byte("heartbeat"));err != nil{
