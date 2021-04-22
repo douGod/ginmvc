@@ -1,6 +1,7 @@
 package network
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"sync"
@@ -22,6 +23,7 @@ func SetUpTcpClient(){
 		if err != nil{
 			log.Fatal(err)
 		}
+		fmt.Println("success to setup tcp client")
 		//一直向服务端发送消息
 		var data []byte
 		for {
