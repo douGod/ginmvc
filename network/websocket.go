@@ -119,6 +119,9 @@ func (con *conn)WriteMessage(data []byte)(err error){
 	return
 }
 func WeChat(c *gin.Context){
+	/*
+		实际应用这里要校验连接权限。。。。
+	*/
 	var err error
 	var data []byte
 	var Conn = &conn{}
