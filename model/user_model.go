@@ -3,6 +3,7 @@ package model
 import (
 	"LaodamingMVC/database"
 	"fmt"
+	"sync"
 )
 //用户表结构
 type UserInfo struct {
@@ -20,8 +21,16 @@ func GetUserInfo(ID int64) *UserInfo{
 func AddUserInfo(){
 	Db:= database.GetDb()
 	user_info := UserInfo{Name:"劳达明"}
-	err :=Db.Create(&user_info).Error
-	if err != nil{
-		fmt.Println(Db.GetErrors())
+	wait := new(sync.WaitGroup)
+	wait.Add(100000)
+	for i:=0 ; i< 100000;i++{
+		go func(w *sync.WaitGroup){
+			err :=Db.Create(&user_info).Error
+			if err != nil{
+				fmt.Println(Db.GetErrors())
+			}
+			w.Done()
+		}(wait)
 	}
+	fmt.Println("success to add 100000 row data")
 }
