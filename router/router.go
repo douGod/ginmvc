@@ -15,9 +15,11 @@ func SetupRouter() gin.Engine{
 	//设置访问路由
 	r.GET("/GetUser/:ID",control.GetUser)
 	r.GET("/AddUser",control.AddUser)
-	r.GET("/Test/:Message",control.Test)
-	r.GET("/VerifyCode/:Code",control.VerifyCode)
+	r.GET("/DrawVerCode",control.DrawVerCode)
 	r.GET("/SendMsg",control.SendMsg)
+	r.POST("/PostData",control.PostData)
+	//测试redis
+	r.GET("/TestRedis",control.TestRedis)
 	//聊天页面路由
 	r.GET("/",control.ShowWeChat)
 	//websocket连接升级请求

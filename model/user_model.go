@@ -12,14 +12,14 @@ type UserInfo struct {
 }
 
 func GetUserInfo(ID int64) *UserInfo{
-	Db:= database.GetDb()
+	Db:= database.GetMysqlDb()
 	user_info := &UserInfo{}
 	Db.Find(user_info,"ID = ?",ID)
 	return user_info
 }
 
 func AddUserInfo(){
-	Db:= database.GetDb()
+	Db:= database.GetMysqlDb()
 	user_info := UserInfo{Name:"劳达明"}
 	wait := new(sync.WaitGroup)
 	wait.Add(100000)

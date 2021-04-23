@@ -28,7 +28,7 @@ func connectDb(){
 		myDb.DB().SetMaxOpenConns(100)
 	})
 }
-func GetDb()*gorm.DB{
+func GetMysqlDb()*gorm.DB{
 	if myDb == nil{
 		connectDb()
 	}

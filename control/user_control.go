@@ -1,11 +1,13 @@
 package control
 
 import (
+	"LaodamingMVC/database"
 	"LaodamingMVC/model"
 	"LaodamingMVC/network"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mojocn/base64Captcha"
+	"log"
 	"strconv"
 	"sync"
 )
@@ -21,39 +23,69 @@ func GetUser(c *gin.Context){
 func AddUser(c *gin.Context){
 	model.AddUserInfo()
 }
+//测试redis连接池
+func TestRedis(c *gin.Context){
+	redisDb := database.GetRedisDb()
+	if redisDb == nil{
+		log.Fatal("redis 客户端异常")
+	}
+	err := redisDb.SetNX("ldm","劳达明",0).Err()
+	if err != nil{
+		log.Fatal(err)
+	}
+	val,err := redisDb.Get("ldm").Result()
+	if err != nil{
+		log.Fatal(err)
+	}
+	fmt.Println(val)
+}
+func PostData(c *gin.Context){
+	type FormData struct {
+		Name string `form:"Name"`
+		ID int `form:"ID"`
+		VerCode string `form:"VerCode"`
+	}
+	data := &FormData{}
+	c.ShouldBind(data)
+	if !verifyCode(data.VerCode){
+		c.String(200,"验证码错误")
+		return
+	}
+	c.JSON(200,data)
+}
 //测试输出验证码
-func Test(c *gin.Context){
+func DrawVerCode(c *gin.Context){
 	item := flushcode()
 	item.WriteTo(c.Writer)
 }
+//刷新验证码
 func flushcode()base64Captcha.Item{
-	drivers := GetDriver().ConvertFonts()
+	drivers := getDriver().ConvertFonts()
 	cs := base64Captcha.NewCaptcha(drivers, store)
 	_, content, answer := cs.Driver.GenerateIdQuestionAnswer()
-	id := "captcha:yufei"
+	id := "laodaming"//自定义，一般是用户唯一标识
 	item, _ := cs.Driver.DrawCaptcha(content)
 	cs.Store.Set(id, answer)
 	fmt.Println(answer)
 	return item
 }
-func VerifyCode(c *gin.Context){
-	drivers := GetDriver().ConvertFonts()
+func verifyCode(VerCode string) bool{
+	drivers := getDriver().ConvertFonts()
 	cs := base64Captcha.NewCaptcha(drivers, store)
-	Code := c.Param("Code")
-	id := "captcha:yufei"
-	if cs.Store.Verify(id,Code,false){
+	id := "laodaming"//自定义，一般是用户唯一标识
+	if cs.Store.Verify(id,VerCode,false){
 		flushcode()
-		c.String(200,"success")
+		return true
 	}else{
 		flushcode()
-		c.String(200,"false")
+		return false
 	}
 
 
 
 }
 //获取验证码驱动
-func GetDriver() *base64Captcha.DriverString{
+func getDriver() *base64Captcha.DriverString{
     Once.Do(func(){
 		driver = new(base64Captcha.DriverString)
 		driver.Height = 50

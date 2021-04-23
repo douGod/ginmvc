@@ -6,5 +6,11 @@
 </head>
 <body>
 {{.Name}} {{.ID}}
+<form method="post" action="/PostData">
+    姓名：<input type="text" name="Name" value="{{.Name}}"/>
+    ID:<input name="ID" type="number" value="{{.ID}}"/>
+    验证码：<image src = "/DrawVerCode" onclick="this.src='/DrawVerCode?a='+Math.random()"/> <input name="VerCode" type="text" value=""/>
+    <input type="submit" value="提交"/>
+</form>
 </body>
 </html>

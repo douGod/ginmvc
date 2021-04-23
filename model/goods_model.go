@@ -10,7 +10,7 @@ type GoodsInfo struct {
 }
 
 func GetGoods() *GoodsInfo{
-	Db:= database.GetDb()
+	Db:= database.GetMysqlDb()
 	goods_info := &GoodsInfo{}
 	Db.First(goods_info)
 	return goods_info
