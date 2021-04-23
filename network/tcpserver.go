@@ -10,7 +10,7 @@ var tcpservonce sync.Once
 func SetUpTcpServer(){
 	tcpservonce.Do(func(){
 		list,err := net.Listen("tcp","0.0.0.0:9502")
-		fmt.Println("success to setup tcp serv")
+		fmt.Println("success to setup tcp server")
 		defer list.Close()
 		if err != nil{
 			log.Fatal(err)

@@ -6,7 +6,7 @@ import(
 )
 var redisConn *redis.Client
 var onceRedis sync.Once
-func init() {
+func connectRedis() {
 	onceRedis.Do(func(){
 		redisConn = redis.NewClient(&redis.Options{
 			Addr:"127.0.0.1:6379",
@@ -16,9 +16,12 @@ func init() {
 			MinIdleConns:2,//最小连接数
 			IdleTimeout:1,//多余连接1分钟后释放
 		})
-		fmt.Println("connect to redis")
+		fmt.Println("success connect to redis")
 	})
 }
 func GetRedisDb() *redis.Client{
+	if redisConn == nil{
+		connectRedis()
+	}
 	return redisConn
 }
