@@ -8,7 +8,7 @@ import (
 func noRouter(c *gin.Context){
 	c.String(404,"无效的访问路由")
 }
-func SetupRouter()*gin.Engine{
+func SetupRouter() gin.Engine{
 	r := gin.Default()
 	r.Static("/static","./static")
 	r.LoadHTMLGlob("./view/*")
@@ -23,5 +23,5 @@ func SetupRouter()*gin.Engine{
 	//websocket连接升级请求
 	r.GET("/ws",network.WeChat)
 	r.NoRoute(noRouter)
-	return r
+	return *r
 }
