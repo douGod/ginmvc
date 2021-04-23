@@ -19,9 +19,9 @@ func connectRedis() {
 		fmt.Println("success connect to redis")
 	})
 }
-func GetRedisDb() *redis.Client{
+func GetRedisDb() redis.Client{
 	if redisConn == nil{
 		connectRedis()
 	}
-	return redisConn
+	return *redisConn
 }
