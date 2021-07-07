@@ -1,12 +1,12 @@
 package database
-import(
-	"fmt"
+
+import (
 	"github.com/go-redis/redis"
 	"sync"
 )
 var redisConn *redis.Client
 var onceRedis sync.Once
-func connectRedis() {
+func connectRedis() error {
 	onceRedis.Do(func(){
 		redisConn = redis.NewClient(&redis.Options{
 			Addr:"127.0.0.1:6379",
@@ -16,12 +16,17 @@ func connectRedis() {
 			MinIdleConns:2,//最小连接数
 			IdleTimeout:1,//多余连接1分钟后释放
 		})
-		fmt.Println("success connect to redis")
 	})
-}
-func GetRedisDb() redis.Client{
-	if redisConn == nil{
-		connectRedis()
+	if _,err:=redisConn.Ping().Result();err != nil{
+		return err
 	}
-	return *redisConn
+	return nil
+}
+func GetRedisDb() (redis.Client,error){
+	if redisConn == nil{
+		if err := connectRedis();err != nil{
+			return redis.Client{}, err
+		}
+	}
+	return *redisConn,nil
 }

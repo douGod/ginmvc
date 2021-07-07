@@ -25,8 +25,11 @@ func AddUser(c *gin.Context){
 }
 //测试redis连接池
 func TestRedis(c *gin.Context){
-	redisDb := database.GetRedisDb()
-	err := redisDb.SetNX("ldm","劳达明",0).Err()
+	redisDb,err:= database.GetRedisDb()
+	if err != nil{
+		return
+	}
+	err = redisDb.SetNX("ldm","劳达明",0).Err()
 	if err != nil{
 		log.Fatal(err)
 	}
