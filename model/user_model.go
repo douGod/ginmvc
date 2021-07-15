@@ -7,27 +7,24 @@ import (
 )
 //用户表结构
 type UserInfo struct {
-	ID int64 `gorm:"column:ID"`
-	Name string `gorm:"column:Name"`
+	ID int64 `gorm:"primaryKey"`
+	Name string `gorm:"default:''"`
 }
 
-func GetUserInfo(ID int64) *UserInfo{
-	Db:= database.GetMysqlDb()
-	user_info := &UserInfo{}
-	Db.Find(user_info,"ID = ?",ID)
-	return user_info
+func GetUserInfo(ID int64,userInfo *UserInfo)error{
+
+	return database.MysqlDb.Debug().Find(userInfo,"id = ?",ID).Error
 }
 
 func AddUserInfo(){
-	Db:= database.GetMysqlDb()
 	user_info := UserInfo{Name:"劳达明"}
 	wait := new(sync.WaitGroup)
 	wait.Add(100000)
 	for i:=0 ; i< 100000;i++{
 		go func(w *sync.WaitGroup){
-			err :=Db.Create(&user_info).Error
+			err :=database.MysqlDb.Create(&user_info).Error
 			if err != nil{
-				fmt.Println(Db.GetErrors())
+				fmt.Println(database.MysqlDb.GetErrors())
 			}
 			w.Done()
 		}(wait)

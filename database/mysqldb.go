@@ -8,29 +8,25 @@ import (
 	"sync"
 )
 //操作数据库指针
-var myDb *gorm.DB
+var MysqlDb *gorm.DB
 var once sync.Once
-func connectDb(){
+func init(){
 	var err error
 	once.Do(func(){
 		var Dsn = config.C("DB_USER")+":"+ config.C("DB_PWD")+"@("+config.C("DB_HOST")+")/"+config.C("DB_NAME")+"?charset=utf8&parseTime=true"
-		if myDb,err = gorm.Open(config.C("DB_DRIVER"),Dsn);err != nil{
-			fmt.Println(err)
-			return
+		if MysqlDb,err = gorm.Open(config.C("DB_DRIVER"),Dsn);err != nil{
+			panic(err.Error())
 		}
 		//myDb.LogMode(true)//logdebug打印sql
 		fmt.Println("success to connect db")
 		//数据表设置为单数
-		myDb.SingularTable(true)
+		MysqlDb.SingularTable(true)
 		//空闲时连接数
-		myDb.DB().SetMaxIdleConns(10)
+		MysqlDb.DB().SetMaxIdleConns(10)
 		//最大连接数
-		myDb.DB().SetMaxOpenConns(100)
+		MysqlDb.DB().SetMaxOpenConns(100)
 	})
-}
-func GetMysqlDb() gorm.DB{
-	if myDb == nil{
-		connectDb()
+	if err = MysqlDb.DB().Ping();err != nil{
+		panic(err.Error())
 	}
-	return *myDb
 }

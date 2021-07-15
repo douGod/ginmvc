@@ -1,7 +1,6 @@
 package main
 
 import (
-	"LaodamingMVC/network"
 	"LaodamingMVC/router"
 	"github.com/gin-gonic/gin"
 )
@@ -12,9 +11,9 @@ func main(){
 	//注册路由
 	r := router.SetupRouter()
 	//挂起tcp服务端
-	go network.SetUpTcpServer()
+	//go network.SetUpTcpServer()
 	//挂起tcp客户端
-	go network.SetUpTcpClient()
+	//go network.SetUpTcpClient()
 	//运行框架
 	r.Run(":9501")
 }

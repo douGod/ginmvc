@@ -11,7 +11,7 @@ func init(){
 		mapConfig["DB_HOST"] = "127.0.0.1:3306"
 		mapConfig["DB_USER"] = "root"
 		mapConfig["DB_PWD"] = "123"
-		mapConfig["DB_NAME"] = "lytest"
+		mapConfig["DB_NAME"] = "test"
 		mapConfig["DB_DRIVER"] = "mysql"
 	})
 

@@ -4,11 +4,11 @@ import (
 	"github.com/go-redis/redis"
 	"sync"
 )
-var redisConn *redis.Client
+var RedisClient *redis.Client
 var onceRedis sync.Once
-func connectRedis() error {
+func init(){
 	onceRedis.Do(func(){
-		redisConn = redis.NewClient(&redis.Options{
+		RedisClient = redis.NewClient(&redis.Options{
 			Addr:"127.0.0.1:6379",
 			Password:"",
 			DB:0,
@@ -17,16 +17,8 @@ func connectRedis() error {
 			IdleTimeout:1,//多余连接1分钟后释放
 		})
 	})
-	if _,err:=redisConn.Ping().Result();err != nil{
-		return err
+	if _,err:=RedisClient.Ping().Result();err != nil{
+		panic(err.Error())
 	}
-	return nil
 }
-func GetRedisDb() (redis.Client,error){
-	if redisConn == nil{
-		if err := connectRedis();err != nil{
-			return redis.Client{}, err
-		}
-	}
-	return *redisConn,nil
-}
+
